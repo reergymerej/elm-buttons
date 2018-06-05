@@ -6,6 +6,7 @@ import Html.Events
 
 type alias Model =
     { red : Int
+    , yellow : Int
     , green : Int
     , blue : Int
     }
@@ -14,6 +15,7 @@ type alias Model =
 model : Model
 model =
     { red = 0
+    , yellow = 0
     , green = 0
     , blue = 0
     }
@@ -23,6 +25,7 @@ type Color
     = Red
     | Green
     | Blue
+    | Yellow
 
 
 type Msg
@@ -51,6 +54,12 @@ update msg model =
         Decrease Blue ->
             { model | blue = model.blue - 1 }
 
+        Decrease Yellow ->
+            { model | yellow = model.yellow - 1 }
+
+        Increase Yellow ->
+            { model | yellow = model.yellow + 1 }
+
 
 type alias Markup =
     Html.Html Msg
@@ -68,6 +77,9 @@ getColorString color =
         Blue ->
             "Blue"
 
+        Yellow ->
+            "Yellow"
+
 
 colorControl : Int -> Color -> Markup
 colorControl colorValue color =
@@ -84,13 +96,10 @@ colorControl colorValue color =
 
 view : Model -> Markup
 view model =
-    let
-        colors =
-            [ Red, Green, Blue ]
-    in
     Html.div []
         [ Html.h1 [] [ Html.text "Buttons" ]
         , colorControl model.red Red
+        , colorControl model.yellow Yellow
         , colorControl model.green Green
         , colorControl model.blue Blue
         ]
