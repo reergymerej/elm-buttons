@@ -14,8 +14,8 @@ type alias Model =
 model : Model
 model =
     { red = 0
-    , green = 1
-    , blue = 2
+    , green = 0
+    , blue = 0
     }
 
 
@@ -27,6 +27,7 @@ type Color
 
 type Msg
     = Increase Color
+    | Decrease Color
 
 
 update : Msg -> Model -> Model
@@ -40,6 +41,15 @@ update msg model =
 
         Increase Blue ->
             { model | blue = model.blue + 1 }
+
+        Decrease Red ->
+            { model | red = model.red - 1 }
+
+        Decrease Green ->
+            { model | green = model.green - 1 }
+
+        Decrease Blue ->
+            { model | blue = model.blue - 1 }
 
 
 type alias Markup =
@@ -59,25 +69,30 @@ getColorString color =
             "Blue"
 
 
-buttonControl : Int -> Color -> Markup
-buttonControl colorValue color =
+colorControl : Int -> Color -> Markup
+colorControl colorValue color =
     let
         colorText =
             getColorString color
     in
     Html.div []
-        [ Html.button [ Html.Events.onClick (Increase color) ] [ Html.text colorText ]
-        , Html.div [] [ Html.text (toString colorValue) ]
+        [ Html.button [ Html.Events.onClick (Decrease color) ] [ Html.text "-" ]
+        , Html.span [] [ Html.text (toString colorValue ++ " " ++ colorText) ]
+        , Html.button [ Html.Events.onClick (Increase color) ] [ Html.text "+" ]
         ]
 
 
 view : Model -> Markup
 view model =
+    let
+        colors =
+            [ Red, Green, Blue ]
+    in
     Html.div []
         [ Html.h1 [] [ Html.text "Buttons" ]
-        , buttonControl model.red Red
-        , buttonControl model.green Green
-        , buttonControl model.blue Blue
+        , colorControl model.red Red
+        , colorControl model.green Green
+        , colorControl model.blue Blue
         ]
 
 
