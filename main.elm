@@ -1,12 +1,13 @@
 module Main exposing (..)
 
 import Html
+import Html.Attributes
 import Html.Events
 
 
 type alias Model =
     { red : Int
-    , yellow : Int
+    , alpha : Int
     , green : Int
     , blue : Int
     }
@@ -15,22 +16,22 @@ type alias Model =
 model : Model
 model =
     { red = 0
-    , yellow = 0
+    , alpha = 0
     , green = 0
     , blue = 0
     }
 
 
-type Color
+type ColorProperty
     = Red
     | Green
     | Blue
-    | Yellow
+    | Alpha
 
 
 type Msg
-    = Increase Color
-    | Decrease Color
+    = Increase ColorProperty
+    | Decrease ColorProperty
 
 
 update : Msg -> Model -> Model
@@ -54,18 +55,18 @@ update msg model =
         Decrease Blue ->
             { model | blue = model.blue - 1 }
 
-        Decrease Yellow ->
-            { model | yellow = model.yellow - 1 }
+        Decrease Alpha ->
+            { model | alpha = model.alpha - 1 }
 
-        Increase Yellow ->
-            { model | yellow = model.yellow + 1 }
+        Increase Alpha ->
+            { model | alpha = model.alpha + 1 }
 
 
 type alias Markup =
     Html.Html Msg
 
 
-getColorString : Color -> String
+getColorString : ColorProperty -> String
 getColorString color =
     case color of
         Red ->
@@ -77,11 +78,11 @@ getColorString color =
         Blue ->
             "Blue"
 
-        Yellow ->
-            "Yellow"
+        Alpha ->
+            "Alpha"
 
 
-colorControl : Int -> Color -> Markup
+colorControl : Int -> ColorProperty -> Markup
 colorControl colorValue color =
     let
         colorText =
@@ -94,14 +95,28 @@ colorControl colorValue color =
         ]
 
 
+getStyle : Model -> Html.Attribute Msg
+getStyle model =
+    let
+        values =
+            { r = toString model.red
+            , g = toString model.green
+            , b = toString model.blue
+            , a = toString model.alpha
+            }
+    in
+    Html.Attributes.style
+        [ ( "backgroundColor", "rgba(" ++ values.r ++ "," ++ values.g ++ "," ++ values.b ++ "," ++ values.a ++ ")" ) ]
+
+
 view : Model -> Markup
 view model =
-    Html.div []
+    Html.div [ getStyle model ]
         [ Html.h1 [] [ Html.text "Buttons" ]
         , colorControl model.red Red
-        , colorControl model.yellow Yellow
         , colorControl model.green Green
         , colorControl model.blue Blue
+        , colorControl model.alpha Alpha
         ]
 
 
