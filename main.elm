@@ -36,39 +36,43 @@ type Msg
 
 update : Msg -> Model -> Model
 update msg model =
+    let
+        step =
+            10
+    in
     case msg of
         Increase Red ->
-            { model | red = model.red + 1 }
+            { model | red = model.red + step }
 
         Increase Green ->
-            { model | green = model.green + 1 }
+            { model | green = model.green + step }
 
         Increase Blue ->
-            { model | blue = model.blue + 1 }
+            { model | blue = model.blue + step }
 
         Decrease Red ->
-            { model | red = model.red - 1 }
+            { model | red = model.red - step }
 
         Decrease Green ->
-            { model | green = model.green - 1 }
+            { model | green = model.green - step }
 
         Decrease Blue ->
-            { model | blue = model.blue - 1 }
+            { model | blue = model.blue - step }
 
         Decrease Alpha ->
-            { model | alpha = model.alpha - 1 }
+            { model | alpha = model.alpha - step }
 
         Increase Alpha ->
-            { model | alpha = model.alpha + 1 }
+            { model | alpha = model.alpha + step }
 
 
 type alias Markup =
     Html.Html Msg
 
 
-getColorString : ColorProperty -> String
-getColorString color =
-    case color of
+getColorPropertyString : ColorProperty -> String
+getColorPropertyString colorProp =
+    case colorProp of
         Red ->
             "Red"
 
@@ -83,15 +87,15 @@ getColorString color =
 
 
 colorControl : Int -> ColorProperty -> Markup
-colorControl colorValue color =
+colorControl colorValue colorProp =
     let
         colorText =
-            getColorString color
+            getColorPropertyString colorProp
     in
     Html.div []
-        [ Html.button [ Html.Events.onClick (Decrease color) ] [ Html.text "-" ]
+        [ Html.button [ Html.Events.onClick (Decrease colorProp) ] [ Html.text "-" ]
         , Html.span [] [ Html.text (toString colorValue ++ " " ++ colorText) ]
-        , Html.button [ Html.Events.onClick (Increase color) ] [ Html.text "+" ]
+        , Html.button [ Html.Events.onClick (Increase colorProp) ] [ Html.text "+" ]
         ]
 
 
@@ -102,7 +106,7 @@ getStyle model =
             { r = toString model.red
             , g = toString model.green
             , b = toString model.blue
-            , a = toString model.alpha
+            , a = toString (toFloat model.alpha / 100)
             }
     in
     Html.Attributes.style
